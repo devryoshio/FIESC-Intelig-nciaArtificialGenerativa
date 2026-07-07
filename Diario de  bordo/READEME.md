@@ -38,4 +38,13 @@ Aqui ví que eu preciso começar com a tela de login, tanto fazendo backend como
 
 Fiquei na dúvida se realmente é esse nome, mas deixei para lá 
 
-- [Dashbord  a primeira tela](./primeiraVersaoDash.md) Gostei bastante porém não esta funcional ainda. 
+- [A 1º tentativa Dashbord](./primeiraVersaoDash.md) Gostei bastante porém não esta funcional ainda. 
+- [A 2º tentativa Dashbord](./segundaVersaoDash.md) Senti que faltava nós conseguir ouvir nosso próprio áudio. 
+
+
+## Criando lição 
+
+A ideia era colocar adicionar áudio, mas no final achei melhor só adicionar o texto e usar a biblioteca para pronunciar 
+
+- [Adicionando a lição](./addcionando_ouvi_voz.md)
+- []

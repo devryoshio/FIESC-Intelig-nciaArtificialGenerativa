@@ -1,4 +1,7 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
+
+
 
 # O que é comum para o Usuário
 class UserBase(BaseModel):
@@ -17,6 +20,24 @@ class UserLogin(UserBase):
 class UserResponse(UserBase):
     id: int
     name: str
+
+    class Config:
+        from_attributes = True
+
+
+
+
+# ... (Mantenha todo o código de UserBase, UserCreate, etc. que já estava aí) ...
+
+# =====================================
+# SCHEMAS DAS LIÇÕES (NOVO)
+# =====================================
+class LessonBase(BaseModel):
+    phrase: str
+
+class LessonResponse(LessonBase):
+    id: int
+    audio_path: Optional[str] = None
 
     class Config:
         from_attributes = True

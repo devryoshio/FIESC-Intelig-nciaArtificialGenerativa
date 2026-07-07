@@ -1,3 +1,10 @@
+Perfeito! Vamos atualizar o **`Dashboard.jsx`** para transformar o aplicativo em uma plataforma dinâmica.
+
+Agora, assim que o aluno entra na tela, o React vai fazer um `fetch` para a rota `/api/lessons/random`, buscar uma frase aleatória direto do banco de dados e carregar o áudio nativo em inglês que o Python gerou com a IA (`gTTS`).
+
+Aqui está o código completo do seu **`src/pages/Dashboard.jsx`** atualizado. Substitua todo o conteúdo do arquivo por este:
+
+```jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mic, Square, RefreshCcw, LogOut, Award, Volume2, PlusCircle } from 'lucide-react';
@@ -96,14 +103,12 @@ export default function Dashboard() {
     }
   };
 
- const enviarAudioParaOBackend = async (audioBlob) => {
+  const enviarAudioParaOBackend = async (audioBlob) => {
     if (!currentLesson) return;
     setIsLoading(true);
     try {
       const formData = new FormData();
-      // NOVO: Manda o ID da lição para o backend poder registrar no banco
-      formData.append('lesson_id', currentLesson.id); 
-      formData.append('phrase', currentLesson.phrase);
+      formData.append('phrase', currentLesson.phrase); // Envia a frase atual dinâmica
       formData.append('file', audioBlob, 'voice.webm');
 
       const response = await fetch('http://localhost:8000/api/analyze-voice', {
@@ -247,3 +252,14 @@ export default function Dashboard() {
     </div>
   );
 }
+
+```
+
+### O que mudou e como funciona agora:
+
+1. **Puxa do Banco:** Assim que a página abre, ela faz a chamada no backend e o SQLite sorteia uma frase.
+2. **Botão de Auto-Falante (`Volume2`):** Adicionei uma função (`playReferenceAudio`). Quando clicado, ele busca o caminho do arquivo gerado pelo Python (`uploads/generated_audio_xxx.mp3`) lá no endereço do servidor e toca o áudio nativo perfeito gerado pelo Google TTS para o aluno escutar antes de gravar.
+3. **Botão de Atalho no Topo:** Adicionei um link *"Cadastrar Frases"* do lado esquerdo do botão de Sair. Assim você pode pular rapidamente para a tela de criação, adicionar 5 novas frases, voltar para o Dashboard e já começar a praticá-las.
+4. **Próxima Lição:** O botão inferior agora limpa a tela e faz um novo sorteio no banco de dados para trazer a próxima lição para você.
+
+Vá em frente, salve o arquivo, cadastre algumas frases e faça o teste completo! Ficou um sistema super dinâmico e profissional. Me conta o que achou!
