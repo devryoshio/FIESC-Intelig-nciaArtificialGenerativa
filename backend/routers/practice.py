@@ -6,6 +6,8 @@ import speech_recognition as sr
 from pydub import AudioSegment
 import io
 import models
+from fastapi.concurrency import run_in_threadpool
+
 
 router = APIRouter(prefix="/api", tags=["Prática de Voz"])
 
@@ -44,7 +46,11 @@ async def analyze_voice(
             audio_data = recognizer.record(source)
             
         try:
-            texto_transcrito = recognizer.recognize_google(audio_data, language="en-US")
+            texto_transcrito = await run_in_threadpool(
+    recognizer.recognize_google,
+    audio_data,
+    language="en-US"
+)
         except sr.UnknownValueError:
             texto_transcrito = ""
         except sr.RequestError:
