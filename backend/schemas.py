@@ -41,3 +41,19 @@ class LessonResponse(LessonBase):
 
     class Config:
         from_attributes = True
+
+
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class FeedbackResult:
+    """
+    Resposta padronizada retornada por qualquer LLM.
+    """
+    feedback: str
+    score: int
+    provider: str
+    model: str
+    mistakes: List[str]
+    tips: List[str]

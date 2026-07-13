@@ -3,7 +3,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Define o arquivo local do SQLite
-SQLALCHEMY_DATABASE_URL = "sqlite:///./shadow_speak.db"
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./shadow_speak.db"
+
+
+
+# Mude para usar 4 barras (caminho absoluto no Linux/Docker):
+SQLALCHEMY_DATABASE_URL = "sqlite:////app/shadowspeak.db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}

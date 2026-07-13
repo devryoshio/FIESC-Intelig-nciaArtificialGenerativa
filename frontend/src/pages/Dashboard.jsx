@@ -18,11 +18,19 @@ export default function Dashboard() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
+
+  const [feedback, setFeedback] = useState('');
+  
+  const [tips, setTips] = useState([]);
+  const [mistakes, setMistakes] = useState([]);
+  const [provider, setProvider] = useState('');
+  const [model, setModel] = useState('');
+
   const fetchRandomLesson = async () => {
     setIsLoadingLesson(true);
     resetPracticeState();
     try {
-      const response = await fetch('http://localhost:8000/api/lessons/random');
+      const response = await fetch('/api/lessons/random');
       if (!response.ok) {
         throw new Error('Nenhuma lição encontrada. Cadastre uma frase primeiro!');
       }
@@ -53,12 +61,18 @@ export default function Dashboard() {
   };
 
   const resetPracticeState = () => {
-    setTranscript('');
-    setScore(null);
-    setAudioURL(null);
-    setAudioBlob(null);
-  };
+  setTranscript('');
+  setScore(null);
 
+  setFeedback('');
+  setTips([]);
+  setMistakes([]);
+  setProvider('');
+  setModel('');
+
+  setAudioURL(null);
+  setAudioBlob(null);
+};
   const startRecording = async () => {
     resetPracticeState();
     audioChunksRef.current = [];
@@ -114,8 +128,15 @@ export default function Dashboard() {
         throw new Error(data.detail || 'Erro ao analisar a voz.');
       }
 
+    
       setTranscript(data.transcript);
       setScore(data.score);
+
+      setFeedback(data.feedback || '');
+      setTips(data.tips || []);
+      setMistakes(data.mistakes || []);
+      setProvider(data.provider || '');
+      setModel(data.model || '');
 
     } catch (error) {
       alert(error.message);
@@ -184,6 +205,8 @@ export default function Dashboard() {
                 <audio controls src={audioURL} className="w-full max-w-md h-12 rounded-md" />
                 
                 {score === null && (
+
+                  
                   <button 
                     onClick={enviarAudioParaOBackend}
                     disabled={isLoading}
@@ -195,26 +218,100 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className={`transition-all duration-500 overflow-hidden ${score !== null ? 'opacity-100 max-h-96' : 'opacity-0 max-h-0'}`}>
-              <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row gap-6 items-start">
-                <div className="flex-1 bg-slate-900/50 rounded-2xl p-6 border border-slate-700/50 w-full">
-                  <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">O servidor ouviu:</h3>
-                  <p className="text-lg text-slate-300 italic">"{transcript}"</p>
-                </div>
+          <div className={`transition-all duration-500 overflow-hidden ${
+  score !== null ? 'opacity-100 max-h-[1200px]' : 'opacity-0 max-h-0'
+}`}>
 
-                <div className="flex flex-col items-center justify-center bg-gradient-to-b from-indigo-900/40 to-slate-900/40 rounded-2xl p-6 border border-indigo-500/20 min-w-[160px]">
-                  <Award size={28} className="text-cyan-400 mb-2" />
-                  <span className="text-4xl font-bold text-white mb-1">{score}%</span>
-                  <span className="text-xs font-medium text-indigo-300 uppercase">Precisão</span>
-                </div>
-              </div>
+  {/* Resultado atual */}
+  <div className="border-t border-slate-700 pt-8 flex flex-col md:flex-row gap-6 items-start">
 
-              <div className="mt-8 flex justify-center">
-                <button onClick={fetchRandomLesson} className="flex items-center gap-2 text-sm bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors px-6 py-3 rounded-xl shadow-md">
-                  <RefreshCcw size={16} /> Próxima Lição Aleatória
-                </button>
-              </div>
-            </div>
+    {/* Transcrição */}
+    <div className="flex-1 bg-slate-900/50 rounded-2xl p-6 border border-slate-700/50 w-full">
+      <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">
+        O servidor ouviu:
+      </h3>
+
+      <p className="text-lg text-slate-300 italic">
+        "{transcript}"
+      </p>
+    </div>
+
+    {/* Nota */}
+    <div className="flex flex-col items-center justify-center bg-gradient-to-b from-indigo-900/40 to-slate-900/40 rounded-2xl p-6 border border-indigo-500/20 min-w-[160px]">
+      <Award size={28} className="text-cyan-400 mb-2" />
+
+      <span className="text-4xl font-bold text-white mb-1">
+        {score}%
+      </span>
+
+      <span className="text-xs font-medium text-indigo-300 uppercase">
+        Precisão
+      </span>
+    </div>
+
+  </div>
+
+  {/* =================================================== */}
+  {/* NOVA ÁREA DA IA */}
+  {/* =================================================== */}
+
+  {feedback && (
+    <div className="mt-8 bg-slate-900/60 rounded-2xl border border-cyan-500/20 p-6">
+      <h3 className="text-lg font-semibold text-cyan-400 mb-4">
+        🤖 Feedback da IA
+      </h3>
+
+      <p className="text-slate-300 leading-relaxed whitespace-pre-line">
+        {feedback}
+      </p>
+    </div>
+  )}
+
+  {mistakes.length > 0 && (
+    <div className="mt-6 bg-slate-900/60 rounded-2xl border border-red-500/20 p-6">
+      <h3 className="text-lg font-semibold text-red-400 mb-3">
+        🎯 Pontos de atenção
+      </h3>
+
+      <ul className="list-disc ml-5 space-y-2">
+        {mistakes.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {tips.length > 0 && (
+    <div className="mt-6 bg-slate-900/60 rounded-2xl border border-emerald-500/20 p-6">
+      <h3 className="text-lg font-semibold text-emerald-400 mb-3">
+        💡 Sugestões
+      </h3>
+
+      <ul className="list-disc ml-5 space-y-2">
+        {tips.map((tip, index) => (
+          <li key={index}>{tip}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {provider && (
+    <div className="mt-6 text-center text-xs text-slate-500">
+      IA utilizada: {provider} ({model})
+    </div>
+  )}
+
+  <div className="mt-8 flex justify-center">
+    <button
+      onClick={fetchRandomLesson}
+      className="flex items-center gap-2 text-sm bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors px-6 py-3 rounded-xl shadow-md"
+    >
+      <RefreshCcw size={16} />
+      Próxima Lição Aleatória
+    </button>
+  </div>
+
+</div>
           </>
         ) : (
           <div className="text-center py-12 text-slate-400">Nenhuma lição encontrada.</div>

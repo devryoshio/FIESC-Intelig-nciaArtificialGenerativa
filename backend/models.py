@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
 from database import Base
 import datetime
 
@@ -20,6 +20,12 @@ class AttemptModel(Base):
     __tablename__ = "attempts"
     id = Column(Integer, primary_key=True, index=True)
     lesson_id = Column(Integer, ForeignKey("lessons.id")) # Liga a tentativa com a lição
-    score = Column(Integer)                               # A nota (0 a 100)
+    score = Column(Integer)
+    feedback = Column(Text, nullable=True)
+    llm_provider = Column(String(30), nullable=True)
+    llm_model = Column(String(50), nullable=True)                            # A nota (0 a 100)
     transcript = Column(String)                           # O que o servidor entendeu que ele falou
     created_at = Column(DateTime, default=datetime.datetime.utcnow) # Data e hora automática
+
+
+
