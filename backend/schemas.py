@@ -43,8 +43,8 @@ class LessonResponse(LessonBase):
         from_attributes = True
 
 
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Dict, Any
 
 @dataclass
 class FeedbackResult:
@@ -56,4 +56,5 @@ class FeedbackResult:
     provider: str
     model: str
     mistakes: List[str]
-    tips: List[str]
+    phonetics: Dict[str, Any] = field(default_factory=dict)
+    tips: List[str] = field(default_factory=list)
