@@ -18,3 +18,4 @@ services:
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/shadow_speak.db:/app/shadow_speak.db
+      

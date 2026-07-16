@@ -139,25 +139,17 @@ async def analyze_voice(
         db.refresh(tentativa)
 
         return {
-
-            "status": "success",
-
-            "attempt_id": tentativa.id,
-
-            "transcript": transcript_final,
-
-            "score": nota,
-
-            "feedback": feedback.feedback,
-
-            "provider": feedback.provider,
-
-            "model": feedback.model,
-
-            "tips": feedback.tips,
-
-            "mistakes": feedback.mistakes,
-        }
+    "status": "success",
+    "attempt_id": tentativa.id,
+    "transcript": transcript_final,
+    "score": nota,
+    "feedback": feedback.feedback,
+    "provider": feedback.provider,
+    "model": feedback.model,
+    "tips": feedback.tips,
+    "mistakes": feedback.mistakes,
+    "phonetics": feedback.phonetics,   # ← faltava esta linha
+}
 
     except HTTPException:
         raise

@@ -6,27 +6,19 @@ from schemas import FeedbackResult
 
 class LLMService:
     def __init__(self):
-        # Configuração agnóstica via variáveis de ambiente (.env)
-        self.provider = os.getenv("LLM_PROVIDER", "openai")
+        # Configuração simplificada focada exclusivamente na OpenAI
+        self.provider = "openai"
         self.model = os.getenv("LLM_MODEL", "gpt-4o-mini")
-        
-        if self.provider == "ollama":
-            self.client = OpenAI(
-                base_url=os.getenv("LLM_BASE_URL", "http://localhost:11434/v1"),
-                api_key="ollama-local"
-            )
-        else:
-            self.client = OpenAI(api_key=os.getenv("LLM_API_KEY", "sua-chave-da-openai"))
+        self.client = OpenAI(api_key=os.getenv("LLM_API_KEY"))
 
     def generate_feedback(self, phrase_original: str, frase_aluno: str, nota_matematica: int) -> FeedbackResult:
         # 1. Carrega o System Prompt estruturado
         with open("prompts/system_prompt.txt", "r", encoding="utf-8") as f:
             system_prompt = f.read()
 
-
         user_content = f"Frase Correta: {phrase_original}\nO que o aluno falou: {frase_aluno}\nNota Inicial: {nota_matematica}%"
 
-        # 2. Chamada universal (Funciona na OpenAI e no Ollama)
+        # 2. Chamada usando o cliente oficial da OpenAI
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
@@ -34,7 +26,8 @@ class LLMService:
                 {"role": "user", "content": user_content}
             ],
             response_format={"type": "json_object"}, # Força o modelo a responder em JSON puro
-            temperature=0.3
+            max_tokens=500,
+            temperature=1
         )
 
         # 3. Faz o PARSE da resposta de forma segura
@@ -48,17 +41,18 @@ class LLMService:
                 "mistakes": [],
                 "tips": ["Pratique a frase pausadamente."]
             }
-
+        
+        print(data_ia)
         # 4. Retorna o objeto Dataclass exatamente como o seu Router espera receber!
         return FeedbackResult(
-    feedback=data_ia.get("feedback", ""),
-    score=nota_matematica,
-    provider=self.provider,
-    model=self.model,
-    mistakes=data_ia.get("mistakes", []),
-    phonetics=data_ia.get("phonetics", {}),
-    tips=data_ia.get("tips", [])
-)
+            feedback=data_ia.get("feedback", ""),
+            score=nota_matematica,
+            provider=self.provider,
+            model=self.model,
+            mistakes=data_ia.get("mistakes", []),
+            phonetics=data_ia.get("phonetics", {}),
+            tips=data_ia.get("tips", [])
+        )
 
 # A função de fábrica (Factory) que o seu router consome
 def get_llm():

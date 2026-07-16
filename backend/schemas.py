@@ -56,5 +56,5 @@ class FeedbackResult:
     provider: str
     model: str
     mistakes: List[str]
-    phonetics: Dict[str, Any] = field(default_factory=dict)
+    phonetics: dict
     tips: List[str] = field(default_factory=list)

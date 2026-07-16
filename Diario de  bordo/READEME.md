@@ -50,3 +50,8 @@ A ideia era colocar adicionar áudio, mas no final achei melhor só adicionar o 
 - [Adicionando a lição](./adicionandoLicao.md)
 - [Adicionando ouvir a propria voz](./addcionando_ouvi_voz.md)
 - [Adicionando Pontuacao](./adicionandoPortucao.md)
+
+
+## Parte dois do Projeto 
+
+- Nesse pdf mostro que tentei colocar uma lição para ignorar o audio e me dá nota máxima [pdf](./Tentei%20enganar%20a%20IA%20para%20da%20nota.pdf)
